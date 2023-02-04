@@ -1,4 +1,6 @@
-﻿Menu();
+﻿using System.Text;
+
+Menu();
 
 static void Menu()
 {
@@ -14,7 +16,7 @@ static void Menu()
     {
         case 0: Environment.Exit(0); break;
         case 1: Abrir(); break;
-        case 2: Editar(); break;
+        case 2: Criar(); break;
     }
 }
 
@@ -24,7 +26,7 @@ static void Abrir()
     Console.WriteLine("Qual o caminho do arquivo?");
     string path = Console.ReadLine();
 
-    using (var file = new StreamReader(path))
+    using (StreamReader file = new(path))
     {
         string text = file.ReadToEnd();
         Console.WriteLine(text);
@@ -35,31 +37,35 @@ static void Abrir()
     Menu();
 }
 
-static void Editar()
+static void Criar()
 {
     Console.Clear();
     Console.WriteLine("Digite seu texto abaixo (Pressione ESC para sair)");
     Console.WriteLine("-------------------------------------------------");
-    string text = "";
+
+    StringBuilder text = new();
 
     do
     {
-        text += Console.ReadLine();
-        text += Environment.NewLine;
+        text.Append(Console.ReadLine());
+        text.Append(Environment.NewLine);
     }
     while (Console.ReadKey().Key != ConsoleKey.Escape);
 
-    Salvar(text);
+    Salvar(text.ToString());
 }
 
 static void Salvar(string text)
 {
     Console.Clear();
-    Console.WriteLine("Informe abaixo o caminho para salvar o arquivo: ");
+    Console.WriteLine("Informe o nome do arquivo abaixo: ");
 
-    var path = Console.ReadLine();
+    var name = Console.ReadLine();
+    name = $"{name}_{DateTime.Now.Hour}";
 
-    using(var file = new StreamWriter(path))
+    string path = $"d://cursos//{name}.txt";
+
+    using(StreamWriter file = new(path))
     {
         file.Write(text);
     }
